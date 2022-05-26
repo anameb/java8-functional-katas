@@ -23,7 +23,7 @@ public class Kata9 {
         return movieLists.stream()
                 .flatMap(movieList -> movieList.getVideos().stream())
                 .map(movie -> {
-                    return ImmutableMap.of("id",movie.getId(), "title", movie.getTitle(), "time", optenerTiempo(movie.getInterestingMoments()), "url", menorBox(movie.getBoxarts()));
+                    return ImmutableMap.of("id",movie.getId(), "title", movie.getTitle(), "time", obtenerTiempo(movie.getInterestingMoments()), "url", menorBox(movie.getBoxarts()));
                 })
                 .collect(Collectors.toList());
 
@@ -34,7 +34,7 @@ public class Kata9 {
         return result.get().getUrl();
     }
 
-    public static Date optenerTiempo(List<InterestingMoment> momentList){
+    public static Date obtenerTiempo(List<InterestingMoment> momentList){
         List<InterestingMoment> result = momentList.stream()
                 .filter(interestingMoment -> interestingMoment.getType().equals("Middle"))
                 .collect(Collectors.toList());

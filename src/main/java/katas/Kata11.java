@@ -2,10 +2,18 @@ package katas;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import model.BoxArt;
+import model.InterestingMoment;
 import util.DataUtil;
 
+import javax.xml.crypto.Data;
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -63,8 +71,46 @@ public class Kata11 {
         List<Map> boxArts = DataUtil.getBoxArts();
         List<Map> bookmarkList = DataUtil.getBookmarkList();
 
-        return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
-                ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
-        )));
+        //return ImmutableList.of(ImmutableMap.of("name", "someName", "videos", ImmutableList.of(
+               // ImmutableMap.of("id", 5, "title", "The Chamber", "time", 123, "boxart", "someUrl")
+        //)));
+
+        //return lists.stream()
+                //.map(movie -> {
+                    //return ImmutableMap.of("id",movie.getId(), "title", movie.getTitle(), "time", optenerTiempo(movie.getInterestingMoments()), "url", menorBox(movie.getBoxarts()));
+                //})
+                //.collect(Collectors.toList());
+
+        return lists.stream()
+                .map(map -> {
+                    return ImmutableMap.of("name", map.get("name"), "videos", obtenerVideos((Integer) map.get("id"), videos));
+                })
+                .collect(Collectors.toList());
+
     }
+
+    public static Stream<ImmutableMap<String, Serializable>> obtenerVideos (Integer listId, List<Map> videos){
+        return videos.stream()
+                .filter(map -> map.get("listId").equals(listId))
+                .map(map -> {
+                    return ImmutableMap.of("id", (Integer) map.get("id"), "title", (String) map.get("title") ,
+                            "time", obtTiempo((List<Map>) map.get("time"))), "url", minBox(map.get("url")));
+                })
+                ;
+    }
+
+    private static <time> Object obtTiempo(List<Map> bookmarkLists) {
+        return (Date) bookmarkLists.stream()
+            .map(book -> book.get("time"))
+            .collect(Collectors.toList());
+    }
+
+    public static String minBox(List<BoxArt> boxArtList) {
+        Optional<BoxArt> result = boxArtList.stream()
+                .reduce((x, y) -> x.getWidth() < y.getWidth() ? x : y);
+        return result.get().getUrl();
+
+
+    }
+
 }
