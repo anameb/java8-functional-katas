@@ -10,6 +10,8 @@ import util.DataUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
     Goal: Combine videos and bookmarks by index (StreamUtils.zip) (https://github.com/poetix/protonpack)
@@ -21,8 +23,18 @@ public class Kata8 {
         List<Movie> movies = DataUtil.getMovies();
         List<Bookmark> bookMarks = DataUtil.getBookMarks();
 
-        // StreamUtils.zip()
+        Stream<Integer> idMovies = movies.stream()
+                .map(movie -> movie.getId());
 
-        return ImmutableList.of(ImmutableMap.of("videoId", 5, "bookmarkId", 3));
+        Stream<Integer> idBook = bookMarks.stream()
+                .map(bookmark -> bookmark.getId());
+
+        List<Map> result = StreamUtils.zip(idMovies,idBook,
+                (a, b) -> ImmutableMap.of("videoId", a, "bookmarkId", b))
+                .collect(Collectors.toList());
+
+
+
+        return result;
     }
 }
